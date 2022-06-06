@@ -142,6 +142,6 @@ jobs:
           max-wait: << parameters.max-wait >>
           deploy-timeout: << parameters.deploy-timeout >>
 
-      - slack/status:
-          failure_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has failed!"
-          success_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has succeeded!"
+      # - slack/status:
+      #     failure_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has failed!"
+      #     success_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has succeeded!"
