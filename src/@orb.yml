@@ -1,9 +1,9 @@
 version: 2.1
 
-description: CircleCI Orbs for deployment to Rancher Server
+description: CircleCI Orbs for deployment to Rancher Server using a rancher cli
 
 display:
-  home_url: "https://lifters.tech"
+  home_url: "https://github.com/twinfo-io/rancher_orbs"
   source_url: "https://github.com/twinfo-io/rancher_orbs"
 
 orbs:
