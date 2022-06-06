@@ -22,7 +22,7 @@ workflows:
           filters: *filters
       - orb-tools/publish:
           orb-name: twinfo-io/rancher_orbs
-          vcs-type: << pipeline.project.type >>
+          vcs-type: github
           requires:
             [orb-tools/lint, orb-tools/review, orb-tools/pack, shellcheck/check]
           # Use a context to hold your publishing token.
@@ -30,7 +30,7 @@ workflows:
           filters: *filters
       # Triggers the next workflow in the Orb Development Kit.
       - orb-tools/continue:
-          pipeline-number: << pipeline.number >>
-          vcs-type: << pipeline.project.type >>
+          pipeline-number: 1
+          vcs-type: github
           requires: [orb-tools/publish]
           filters: *filters
