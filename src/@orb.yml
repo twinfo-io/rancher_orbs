@@ -1,15 +1,147 @@
 version: 2.1
 
-description: >
-  Sample orb description
-# What will your orb allow users to accomplish?
-# Descriptions should be short, simple, and informative.
+description: CircleCI Orbs for deployment to Rancher Server
 
-# This information will be displayed in the orb registry and is not mandatory.
 display:
-  home_url: "https://www.example.com/docs"
+  home_url: "https://lifters.tech"
   source_url: "https://github.com/twinfo-io/rancher_orbs"
 
-# If your orb requires other orbs, you can import them like this. Otherwise remove the "orbs" stanza.
-# orbs:
-#  hello: circleci/hello-build@0.0.5
+orbs:
+  # slack: circleci/slack@2.5.0
+  queue: eddiewebb/queue@1.1.3
+
+commands:
+  upgrade:
+    parameters:
+      rancher-url:
+        type: env_var_name
+        default: RANCHER_W2G_API_URL
+
+      access-key:
+        type: env_var_name
+        default: RANCHER_W2G_ACCESS_KEY
+
+      secret-key:
+        type: env_var_name
+        default: RANCHER_W2G_SECRET_KEY
+
+      stack-name:
+        type: string
+
+      env:
+        type: string
+        description: Name of the environment
+
+      version:
+        type: string
+        default: "${CIRCLE_SHA1:0:7}"
+
+      stack-definition:
+        type: string
+        description: Path the .yml file to configure the stack
+
+      max-wait:
+        type: string
+        default: "60"
+        description: Number of minutes to wait for the environment to become available for deployment
+
+      deploy-timeout:
+        type: string
+        default: "30m"
+
+    steps:
+      - queue/until_front_of_line:
+          time: << parameters.max-wait >>
+
+      - run:
+          name: Deploy << parameters.stack-name >>
+          no_output_timeout: << parameters.deploy-timeout >>
+          command: |
+            export VERSION=<< parameters.version >>
+            rancher \
+              --url "${<< parameters.rancher-url >>}" \
+              --access-key "${<< parameters.access-key >>}" \
+              --secret-key "${<< parameters.secret-key >>}" \
+              --env "<< parameters.env >>" \
+              up \
+              -s "<< parameters.stack-name >>" \
+              -f "<< parameters.stack-definition >>" \
+              --force-upgrade \
+              --confirm-upgrade \
+              --pull -d
+
+      - run:
+          name: Wait for << parameters.stack-name >>
+          no_output_timeout: << parameters.deploy-timeout >>
+          command: |
+            rancher \
+              --url "${<< parameters.rancher-url >>}" \
+              --access-key "${<< parameters.access-key >>}" \
+              --secret-key "${<< parameters.secret-key >>}" \
+              --env "<< parameters.env >>" \
+              wait "<< parameters.stack-name >>"
+
+jobs:
+  upgrade:
+    parameters:
+      rancher-url:
+        type: env_var_name
+        default: RANCHER_W2G_API_URL
+
+      access-key:
+        type: env_var_name
+        default: RANCHER_W2G_ACCESS_KEY
+
+      secret-key:
+        type: env_var_name
+        default: RANCHER_W2G_SECRET_KEY
+
+      stack-name:
+        type: string
+
+      env:
+        type: string
+        description: Name of the environment
+
+      version:
+        type: string
+        default: "${CIRCLE_SHA1:0:7}"
+
+      stack-definition:
+        type: string
+        description: Path the .yml file to configure the stack
+
+      max-wait:
+        type: string
+        default: "60"
+        description: Number of minutes to wait for the environment to become available for deployment
+
+      deploy-timeout:
+        type: string
+        default: 30m
+
+    resource_class: small
+
+    docker:
+      - image: protocool/rancher-circleci
+
+    steps:
+      - checkout
+
+      # - slack/notify:
+      #     message: "Starting deployment of << parameters.stack-name >> to <<parameters.env >>"
+
+      - upgrade:
+          rancher-url: << parameters.rancher-url >>
+          access-key: << parameters.access-key >>
+          secret-key: << parameters.secret-key >>
+          stack-name: << parameters.stack-name >>
+          env: << parameters.env >>
+          version: << parameters.version >>
+          stack-definition: << parameters.stack-definition >>
+          max-wait: << parameters.max-wait >>
+          deploy-timeout: << parameters.deploy-timeout >>
+
+      - slack/status:
+          failure_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has failed!"
+          success_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has succeeded!"
