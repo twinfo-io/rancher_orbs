@@ -8,11 +8,8 @@ filters: &filters
     only: /.*/
 
 jobs:
-  # Create a job to test the commands of your orbs.
-  # You may want to add additional validation steps to ensure the commands are working as expected.
   command-tests:
     docker:
-      # - image: cimg/base:stable
       - image: twinfo/rancher-cli:0.0.1
     steps:
       - checkout
@@ -27,7 +24,6 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
       - command-tests:
           filters: *filters
       - orb-tools/pack:
