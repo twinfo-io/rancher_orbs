@@ -15,15 +15,15 @@ commands:
     parameters:
       rancher-url:
         type: env_var_name
-        default: RANCHER_W2G_API_URL
+        default: RANCHER_API_URL
 
       access-key:
         type: env_var_name
-        default: RANCHER_W2G_ACCESS_KEY
+        default: RANCHER_ACCESS_KEY
 
       secret-key:
         type: env_var_name
-        default: RANCHER_W2G_SECRET_KEY
+        default: RANCHER_SECRET_KEY
 
       stack-name:
         type: string
@@ -86,15 +86,15 @@ jobs:
     parameters:
       rancher-url:
         type: env_var_name
-        default: RANCHER_W2G_API_URL
+        default: RANCHER_API_URL
 
       access-key:
         type: env_var_name
-        default: RANCHER_W2G_ACCESS_KEY
+        default: RANCHER_ACCESS_KEY
 
       secret-key:
         type: env_var_name
-        default: RANCHER_W2G_SECRET_KEY
+        default: RANCHER_SECRET_KEY
 
       stack-name:
         type: string
