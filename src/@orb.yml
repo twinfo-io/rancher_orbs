@@ -1,58 +1,44 @@
 version: 2.1
-
 description: CircleCI Orbs for deployment to Rancher Server using a rancher cli
-
 display:
   home_url: "https://github.com/twinfo-io/rancher_orbs"
   source_url: "https://github.com/twinfo-io/rancher_orbs"
-
 orbs:
   # slack: circleci/slack@2.5.0
   queue: eddiewebb/queue@1.1.3
-
 commands:
   upgrade:
     parameters:
       rancher-url:
         type: env_var_name
         default: RANCHER_API_URL
-
       access-key:
         type: env_var_name
         default: RANCHER_ACCESS_KEY
-
       secret-key:
         type: env_var_name
         default: RANCHER_SECRET_KEY
-
       stack-name:
         type: string
-
       env:
         type: string
         description: Name of the environment
-
       version:
         type: string
         default: "${CIRCLE_SHA1:0:7}"
-
       stack-definition:
         type: string
         description: Path the .yml file to configure the stack
-
       max-wait:
         type: string
         default: "60"
         description: Number of minutes to wait for the environment to become available for deployment
-
       deploy-timeout:
         type: string
         default: "30m"
-
     steps:
       - queue/until_front_of_line:
           time: << parameters.max-wait >>
-
       - run:
           name: Deploy << parameters.stack-name >>
           no_output_timeout: << parameters.deploy-timeout >>
@@ -69,7 +55,6 @@ commands:
               --force-upgrade \
               --confirm-upgrade \
               --pull -d
-
       - run:
           name: Wait for << parameters.stack-name >>
           no_output_timeout: << parameters.deploy-timeout >>
@@ -80,58 +65,41 @@ commands:
               --secret-key "${<< parameters.secret-key >>}" \
               --env "<< parameters.env >>" \
               wait "<< parameters.stack-name >>"
-
 jobs:
   upgrade:
     parameters:
       rancher-url:
         type: env_var_name
         default: RANCHER_API_URL
-
       access-key:
         type: env_var_name
         default: RANCHER_ACCESS_KEY
-
       secret-key:
         type: env_var_name
         default: RANCHER_SECRET_KEY
-
       stack-name:
         type: string
-
       env:
         type: string
         description: Name of the environment
-
       version:
         type: string
         default: "${CIRCLE_SHA1:0:7}"
-
       stack-definition:
         type: string
         description: Path the .yml file to configure the stack
-
       max-wait:
         type: string
         default: "60"
         description: Number of minutes to wait for the environment to become available for deployment
-
       deploy-timeout:
         type: string
         default: 30m
-
     resource_class: small
-
     docker:
       - image: protocool/rancher-circleci
-
-    steps:
-    
+    steps:    
       - checkout
-
-      # - slack/notify:
-      #     message: "Starting deployment of << parameters.stack-name >> to <<parameters.env >>"
-
       - upgrade:
           rancher-url: << parameters.rancher-url >>
           access-key: << parameters.access-key >>
@@ -143,6 +111,3 @@ jobs:
           max-wait: << parameters.max-wait >>
           deploy-timeout: << parameters.deploy-timeout >>
 
-      # - slack/status:
-      #     failure_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has failed!"
-      #     success_message: "Deployment of << parameters.stack-name >> to <<parameters.env >> has succeeded!"
