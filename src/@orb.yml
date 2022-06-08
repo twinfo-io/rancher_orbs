@@ -98,7 +98,7 @@ jobs:
     resource_class: small
     docker:
       - image: protocool/rancher-circleci
-    steps:    
+    steps:
       - checkout
       - upgrade:
           rancher-url: << parameters.rancher-url >>
@@ -110,4 +110,3 @@ jobs:
           stack-definition: << parameters.stack-definition >>
           max-wait: << parameters.max-wait >>
           deploy-timeout: << parameters.deploy-timeout >>
-
