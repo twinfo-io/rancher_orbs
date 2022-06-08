@@ -20,6 +20,9 @@ jobs:
           env: staging
           stack-name: hello-world-stack
           stack-definition: definition of stack
+          rancher-url: http://www.google.com
+          access-key: 123456
+          secret-key: 654321
 
 workflows:
   test-deploy:
