@@ -13,7 +13,7 @@ jobs:
   command-tests:
     docker:
       # - image: cimg/base:stable
-      - image: protocool/rancher-circleci
+      - image: twinfo/rancher-cli:0.0.1
     steps:
       # - checkout
       - rancher_orbs/upgrade:

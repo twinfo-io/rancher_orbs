@@ -1,7 +1,9 @@
-FROM ubuntu:16.10
+FROM ubuntu:16.04
 
 # Install dependencies
-RUN apt-get update && apt-get install -y curl jq
+RUN apt-get update
+RUN apt-get install -y curl 
+RUN apt-get install -y jq
 
 # Install Docker client
 RUN set -x \
