@@ -1,61 +1,47 @@
-description: >
-  Sample example description.
-# Provide a use-case based example for using this orb.
-# Everything in the `usage` section will be displayed in the orb registry.
-# Comments are not retained.
-usage:
-  version: 2.1
-  orbs:
-    <orb-name>: <namespace>/<orb-name>@1.2.3
-  workflows:
-    use-my-orb:
-      jobs:
-        - <orb-name>/<job-name>
-        
-# version: 2.1
-# orbs:
-#   rancher_orbs: twinfo-io/rancher_orbs@dev:<<pipeline.git.revision>>
-#   orb-tools: circleci/orb-tools@11.1
+version: 2.1
+orbs:
+  rancher_orbs: twinfo-io/rancher_orbs@dev:<<pipeline.git.revision>>
+  orb-tools: circleci/orb-tools@11.1
 
-# filters: &filters
-#   tags:
-#     only: /.*/
+filters: &filters
+  tags:
+    only: /.*/
 
-# jobs:
-#   # Create a job to test the commands of your orbs.
-#   # You may want to add additional validation steps to ensure the commands are working as expected.
-#   command-tests:
-#     docker:
-#       # - image: cimg/base:stable
-#       - image: twinfo/rancher-cli:0.0.1
-#     steps:
-#       # - checkout
-#       - rancher_orbs/upgrade:
-#           env: staging
-#           stack-name: hello-world-stack
-#           stack-definition: definition of stack
-#           rancher-url: http://www.google.com
-#           access-key: 123456
-#           secret-key: 654321
+jobs:
+  # Create a job to test the commands of your orbs.
+  # You may want to add additional validation steps to ensure the commands are working as expected.
+  command-tests:
+    docker:
+      # - image: cimg/base:stable
+      - image: twinfo/rancher-cli:0.0.1
+    steps:
+      - checkout
+      # - rancher_orbs/upgrade:
+      #     env: staging
+      #     stack-name: hello-world-stack
+      #     stack-definition: definition of stack
+      #     rancher-url: http://www.google.com
+      #     access-key: 123456
+      #     secret-key: 654321
 
-# workflows:
-#   test-deploy:
-#     jobs:
-#       # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
-#       - command-tests:
-#           filters: *filters
-#       - orb-tools/pack:
-#           filters: *filters
-#       - orb-tools/publish:
-#           orb-name: twinfo-io/rancher_orbs
-#           vcs-type: << pipeline.project.type >>
-#           pub-type: production
-#           requires:
-#             - orb-tools/pack
-#             - command-tests
-#           context: orb-publishing
-#           filters:
-#             branches:
-#               ignore: /.*/
-#             tags:
-#               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+workflows:
+  test-deploy:
+    jobs:
+      # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
+      - command-tests:
+          filters: *filters
+      - orb-tools/pack:
+          filters: *filters
+      - orb-tools/publish:
+          orb-name: twinfo-io/rancher_orbs
+          vcs-type: << pipeline.project.type >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - command-tests
+          context: orb-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
