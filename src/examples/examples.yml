@@ -1,0 +1,21 @@
+description: >
+  Sample example description.
+usage:
+  version: 2.1
+  orbs:
+    <orb-name>: <namespace>/<orb-name>@1.2.3
+  workflows:
+    use-my-orb:
+      jobs:
+        - example-job
+        docker:
+          - image: cimg/base:stable
+        steps:
+          - <orb-name>/<job-name>:
+            env: production
+            stack-definition: worpress platform
+            stack-name: worpress
+      workflows:
+        example-workflow:
+          jobs:
+            - example-job           
