@@ -36,7 +36,17 @@ commands:
       deploy-timeout:
         type: string
         default: "30m"
+      attach-workspace:
+        default: false
+        description: |
+            Boolean for whether or not to attach to an existing workspace. Default is false.
+        type: boolean
     steps:
+      - when:
+          condition: <<parameters.attach-workspace>>
+          steps:
+            - attach_workspace:
+                at: .
       - queue/until_front_of_line:
           time: << parameters.max-wait >>
       - run:
@@ -95,6 +105,11 @@ jobs:
       deploy-timeout:
         type: string
         default: 30m
+      attach-workspace:
+        default: false
+        description: |
+            Boolean for whether or not to attach to an existing workspace. Default is false.
+        type: boolean
     resource_class: small
     docker:
       - image: twinfo/rancher-cli:0.0.2
@@ -110,3 +125,4 @@ jobs:
           stack-definition: << parameters.stack-definition >>
           max-wait: << parameters.max-wait >>
           deploy-timeout: << parameters.deploy-timeout >>
+          attach-workspace: <<parameters.attach-workspace>>
